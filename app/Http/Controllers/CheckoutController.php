@@ -20,7 +20,7 @@ class CheckoutController extends Controller
         $user = $request->user();
 
         $hasOneTimePayment = Payment::where('user_id', $user->id)
-            ->where('status', 'succeeded')
+            ->where('status', 'paid')
             ->exists();
 
         if ($hasOneTimePayment) {
