@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use App\Models\Payment;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
 use Stripe\Checkout\Session;
 
 class CheckoutController extends Controller
 {
+    
+    
     /**
      * Handle the subscription checkout.
      */
@@ -20,7 +26,7 @@ class CheckoutController extends Controller
         $user = $request->user();
 
         $hasOneTimePayment = Payment::where('user_id', $user->id)
-            ->where('status', 'paid')
+            ->where('status', 'succeeded')
             ->exists();
 
         if ($hasOneTimePayment) {

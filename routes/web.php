@@ -3,6 +3,9 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,9 +30,6 @@ Route::get('/checkout/{plan?}', [CheckoutController::class, '__invoke'])->middle
 Route::get('/one-time-checkout/{priceId}', [CheckoutController::class, 'oneTimeCheckout'])->middleware(['auth'])->name('one-time.checkout');
 Route::get('/payment-success', [CheckoutController::class, 'paymentSuccess'])->middleware(['auth'])->name('payment.success');
 Route::post('/cancel', [CheckoutController::class, 'cancel'])->middleware(['auth'])->name('payment.cancel');
-
-
-  
 Route::get('/invoice/latest', function () {
     $user = auth()->user();
     $invoice = $user->invoices()->first(); 
@@ -43,6 +43,21 @@ Route::get('/invoice/latest', function () {
         return redirect()->route('dashboard')->with('error', 'No invoices found.');
     }
 })->name('invoice.latest');
+
+
+// products logic here 
+Route::get('/products', [ProductController::class, 'index'])->name('products');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [CartController::class, 'store'])->name('cart.store');
+Route::patch('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::post('/checkout', [CartController::class, 'processPayment'])->name('cart.processPayment');
+Route::get('/orders', [CartController::class, 'orders'])->name('orders.index');
+Route::get('/orders/{order}', [CartController::class, 'ordersShow'])->name('orders.show');
+
+
+
 
 
 
